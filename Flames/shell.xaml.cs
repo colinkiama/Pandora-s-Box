@@ -142,11 +142,18 @@ namespace Flames
             var anim = (AnimationSet)sender;
             var flame = (Image)anim.Element;
 
+           
+
+
             var thisCircleEnemy = Flames.flame.flames.First();
             bool isHit = await checkIfHitDetected(flame);
             if (!isHit)
             {
-                var fadeAnim = flame.Offset(thisCircleEnemy.animXOffset, (float)(gameScreen.ActualHeight - flame.ActualHeight));
+                var flameAsVisual = flame.TransformToVisual(gameScreen);
+                var flameAsPoint = flameAsVisual.TransformPoint(new Point(0, 0));
+                var flameOffSetX = flameAsPoint.X;
+
+                var fadeAnim = flame.Offset((float)flameOffSetX, (float)(gameScreen.ActualHeight - flame.ActualHeight));
                 fadeAnim.Completed += FadeAnim_Completed;
                await fadeAnim.StartAsync();
             }
@@ -161,6 +168,8 @@ namespace Flames
         {
             var anim = (AnimationSet)sender;
             var flame = (Image)anim.Element;
+           
+
             gameScreen.Children.Remove(flame);
 
             var thisCircleEnemy = Flames.flame.flames.First();
