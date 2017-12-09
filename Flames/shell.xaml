@@ -13,6 +13,12 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
           Name="gameScreen">
+        <TextBlock Name="pointsTextBlock"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Margin="20,40,0,0"
+                   FontSize="30"
+                   FontWeight="SemiBold"/>
         <Rectangle Name="mainCharacter"
               Height="20"
               Width="20"

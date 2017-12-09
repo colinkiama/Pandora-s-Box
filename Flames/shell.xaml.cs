@@ -37,7 +37,6 @@ namespace Flames
         bool gameLoopEnabled = true;
         int characterSpeed = 17;
         int points = 0;
-
         public shell()
         {
             this.InitializeComponent();
@@ -61,15 +60,7 @@ namespace Flames
 
         }
 
-        private void drawFrame()
-        {
-
-        }
-
-        private void updateFrame()
-        {
-
-        }
+       
 
         private async Task startCreatingEnemies(float randomPosX)
         {
@@ -153,6 +144,7 @@ namespace Flames
             if (!isHit)
             {
                 points += 1;
+                pointsTextBlock.Text = $"Points: {points}";
                 var flameAsVisual = flame.TransformToVisual(gameScreen);
                 var flameAsPoint = flameAsVisual.TransformPoint(new Point(0, 0));
                 var flameOffSetX = flameAsPoint.X;
