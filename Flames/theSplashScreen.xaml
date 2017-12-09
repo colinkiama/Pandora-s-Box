@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Flames.MainPage"
+    x:Class="Flames.theSplashScreen"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Flames"
