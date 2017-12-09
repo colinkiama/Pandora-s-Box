@@ -95,6 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="flame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="shell.xaml.cs">
       <DependentUpon>shell.xaml</DependentUpon>
@@ -110,6 +111,7 @@
     <None Include="Flames_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\flame.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
