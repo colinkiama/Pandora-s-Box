@@ -35,11 +35,14 @@ namespace Flames
         bool isMovingLeft = false;
         bool isDead = false;
         bool gameLoopEnabled = true;
+        int characterSpeed = 17;
+        int points = 0;
+
         public shell()
         {
             this.InitializeComponent();
             characterOffset = 0;
-            App.Current.DebugSettings.EnableFrameRateCounter = true;
+
 
         }
 
@@ -70,7 +73,7 @@ namespace Flames
 
         private async Task startCreatingEnemies(float randomPosX)
         {
-            await Task.Delay(100);
+            await Task.Delay(175);
             //var circleEnemy = new Ellipse();
             //circleEnemy.Fill = new SolidColorBrush(Colors.Red);
             double circleSize = 100;
@@ -83,7 +86,7 @@ namespace Flames
             gameScreen.Children.Add(circleEnemy.flameImage);
 
 
-            var anim = circleEnemy.flameImage.Offset(randomPosX, (float)(gameScreen.ActualHeight - circleEnemy.flameImage.Height - mainCharacter.ActualHeight), 300, 0, EasingType.Sine);
+            var anim = circleEnemy.flameImage.Offset(randomPosX, (float)(gameScreen.ActualHeight - circleEnemy.flameImage.Height - mainCharacter.ActualHeight + 10), 400, 0, EasingType.Sine);
 
             anim.Completed += Anim_Completed;
             circleEnemy.isMoving = true;
@@ -96,39 +99,39 @@ namespace Flames
         private async Task<bool> checkIfHitDetected(Image flame)
         {
             bool wtf = false;
-           
-                var flameVisual = flame.TransformToVisual(gameScreen);
-                var flamePoint = flameVisual.TransformPoint(new Point(0, 0));
-                var flamePointX = flamePoint.X;
-                var actualFlameWidth = flame.ActualWidth;
 
-                var mainCharVisual = mainCharacter.TransformToVisual(gameScreen);
-                var mainCharPoint = mainCharVisual.TransformPoint(new Point(0, 0));
-                var mainCharPointX = mainCharPoint.X;
-                var actualMainCharWidth = mainCharacter.ActualWidth;
-               
-                await Task.Run(() =>
+            var flameVisual = flame.TransformToVisual(gameScreen);
+            var flamePoint = flameVisual.TransformPoint(new Point(0, 0));
+            var flamePointX = flamePoint.X;
+            var actualFlameWidth = flame.ActualWidth;
+
+            var mainCharVisual = mainCharacter.TransformToVisual(gameScreen);
+            var mainCharPoint = mainCharVisual.TransformPoint(new Point(0, 0));
+            var mainCharPointX = mainCharPoint.X;
+            var actualMainCharWidth = mainCharacter.ActualWidth;
+
+            await Task.Run(() =>
+            {
+                for (int i = (int)flamePointX; i < flamePointX + actualFlameWidth + 1; i++)
                 {
-                    for (int i = (int)flamePointX; i < flamePointX + actualFlameWidth + 1; i++)
+                    for (int j = (int)mainCharPointX; j < mainCharPointX + actualMainCharWidth; j++)
                     {
-                        for (int j = (int)mainCharPointX; j < mainCharPointX + actualMainCharWidth; j++)
+                        if (i == j)
                         {
-                            if (i == j)
-                            {
-                                Debug.WriteLine("GAME OVER YEAAAAAAAH");
-                                wtf = true;
-                            }
+                            Debug.WriteLine("GAME OVER YEAAAAAAAH");
+                            wtf = true;
+                        }
 
-                        }
-                        if (i == flamePointX + actualFlameWidth)
-                        {
-                            Debug.WriteLine("WTF");
-                        }
                     }
-                });
-                
+                    if (i == flamePointX + actualFlameWidth)
+                    {
+                        Debug.WriteLine("WTF");
+                    }
+                }
+            });
 
-           
+
+
 
             return wtf;
 
@@ -142,24 +145,26 @@ namespace Flames
             var anim = (AnimationSet)sender;
             var flame = (Image)anim.Element;
 
-           
+
 
 
             var thisCircleEnemy = Flames.flame.flames.First();
             bool isHit = await checkIfHitDetected(flame);
             if (!isHit)
             {
+                points += 1;
                 var flameAsVisual = flame.TransformToVisual(gameScreen);
                 var flameAsPoint = flameAsVisual.TransformPoint(new Point(0, 0));
                 var flameOffSetX = flameAsPoint.X;
 
-                var fadeAnim = flame.Offset((float)flameOffSetX, (float)(gameScreen.ActualHeight - flame.ActualHeight));
+                var fadeAnim = flame.Offset((float)flameOffSetX, (float)(gameScreen.ActualHeight - flame.ActualHeight), 100).Fade(0, 100);
                 fadeAnim.Completed += FadeAnim_Completed;
-               await fadeAnim.StartAsync();
+                await fadeAnim.StartAsync();
             }
-            else { 
-            gameLoopEnabled = false;
-           
+            else
+            {
+                gameLoopEnabled = false;
+
             }
 
         }
@@ -168,7 +173,7 @@ namespace Flames
         {
             var anim = (AnimationSet)sender;
             var flame = (Image)anim.Element;
-           
+
 
             gameScreen.Children.Remove(flame);
 
@@ -180,25 +185,29 @@ namespace Flames
         {
             if (e.Key == Windows.System.VirtualKey.Right)
             {
-                if (isMovingRight == false)
+                if (gameLoopEnabled)
                 {
-                    isMovingRight = true;
-                    while (isMovingRight)
-                    {
-                        if (characterOffset + 10 < gameScreen.ActualWidth - 20)
-                        {
 
-                            characterOffset += 10;
-                            await mainCharacter.Offset(characterOffset, duration: 0).StartAsync();
-                        }
-                        else if (characterOffset < gameScreen.ActualWidth - 20)
+                    if (isMovingRight == false)
+                    {
+                        isMovingRight = true;
+                        while (isMovingRight)
                         {
-                            await mainCharacter.Offset((float)gameScreen.ActualWidth - 20, duration: 0).StartAsync();
-                            isMovingRight = false;
-                        }
-                        else
-                        {
-                            isMovingRight = false;
+                            if (characterOffset + characterSpeed < gameScreen.ActualWidth - 20)
+                            {
+
+                                characterOffset += characterSpeed;
+                                await mainCharacter.Offset(characterOffset, duration: 0).StartAsync();
+                            }
+                            else if (characterOffset < gameScreen.ActualWidth - 20)
+                            {
+                                await mainCharacter.Offset((float)gameScreen.ActualWidth - 20, duration: 0).StartAsync();
+                                isMovingRight = false;
+                            }
+                            else
+                            {
+                                isMovingRight = false;
+                            }
                         }
                     }
                 }
@@ -206,27 +215,31 @@ namespace Flames
 
             if (e.Key == Windows.System.VirtualKey.Left)
             {
-                if (isMovingLeft == false)
+                if (gameLoopEnabled)
                 {
 
-                    isMovingLeft = true;
-                    while (isMovingLeft)
+                    if (isMovingLeft == false)
                     {
-                        if (characterOffset - 10 > 0)
-                        {
-                            characterOffset -= 10;
-                            await mainCharacter.Offset(characterOffset, duration: 0).StartAsync();
 
-                        }
-                        else if (characterOffset > 0)
+                        isMovingLeft = true;
+                        while (isMovingLeft)
                         {
-                            await mainCharacter.Offset(0, duration: 0).StartAsync();
-                            isMovingLeft = false;
-                        }
+                            if (characterOffset - characterSpeed > 0)
+                            {
+                                characterOffset -= characterSpeed;
+                                await mainCharacter.Offset(characterOffset, duration: 0).StartAsync();
 
-                        else
-                        {
-                            isMovingLeft = false;
+                            }
+                            else if (characterOffset > 0)
+                            {
+                                await mainCharacter.Offset(0, duration: 0).StartAsync();
+                                isMovingLeft = false;
+                            }
+
+                            else
+                            {
+                                isMovingLeft = false;
+                            }
                         }
                     }
                 }
