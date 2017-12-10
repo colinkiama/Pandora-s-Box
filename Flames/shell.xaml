@@ -12,19 +12,115 @@
     KeyUp="Page_KeyUp">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-          Name="gameScreen">
-        <TextBlock Name="pointsTextBlock"
+          Name="mainScreen">
+
+        <Grid Name="mainMenu"
+             Canvas.ZIndex="20"
+              Background="#EE0000">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Image Name="logog"
+                       
+                   
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="Assets/MainLogo.png"/>
+
+            <Grid Grid.Row="1"
+                  Width="200"
+                  Margin="50">
+                <StackPanel>
+                    <Button Name="newGameButton"
+                            Content="Start New Game"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0"
+                            Width="200"
+                            Background="#7851a9"
+                            Foreground="White"
+                            Click="newGameButton_Click"/>
+
+                    <Button Name="exitButton"
+                            Content="Exit"
+                            HorizontalAlignment="Center"
+                             Margin="0,20,0,0"
+                            Width="200"
+                            Background="#7851a9"
+                            Foreground="White"
+                            Click="exitButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <Grid Name="gameOverScreen"
+              Background="#292929"
+              Canvas.ZIndex="10"
+              Visibility="Collapsed"
+              Opacity="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <TextBlock Text="Game Over 😣"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           MaxWidth="300"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="White"
+                       FontSize="50"/>
+                <TextBlock Text="Points:"
+                           FontSize="30"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           Margin="0,50,0,0"
+                           Name="endPointsScoreTextBlock"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1">
+                <StackPanel>
+                    <Button Name="restartGameButton"
+                            Content="Restart Game"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0"
+                            Width="200"
+                            Background="Red"
+                            Foreground="White"
+                            Click="restartGameButton_Click"/>
+
+                    <Button Name="mainMenuButton"
+                            Content="Go Back To Main Menu"
+                            HorizontalAlignment="Center"
+                             Margin="0,20,0,0"
+                            Width="200"
+                            Background="Red"
+                            Foreground="White"
+                            Click="mainMenuButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <Grid Name="gameScreen" Background="Beige">
+            <TextBlock Name="pointsTextBlock"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"
                    Margin="20,40,0,0"
                    FontSize="30"
                    FontWeight="SemiBold"/>
-        <Rectangle Name="mainCharacter"
+            <Rectangle Name="mainCharacter"
               Height="20"
               Width="20"
               HorizontalAlignment="Left"
               VerticalAlignment="Bottom"
               Fill="Red"/>
-        
+        </Grid>
     </Grid>
 </Page>

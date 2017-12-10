@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -34,8 +35,10 @@ namespace Flames
         bool isMovingRight = false;
         bool isMovingLeft = false;
         bool isDead = false;
-        bool gameLoopEnabled = true;
+        bool gameLoopEnabled = false;
         int characterSpeed = 17;
+        float flameDuration = 450;
+        List<Image> flamesLeftBehind = new List<Image>();
         int points = 0;
         public shell()
         {
@@ -49,14 +52,10 @@ namespace Flames
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            Random rnd = new Random();
+           
 
 
-            while (gameLoopEnabled)
-            {
-                float randomPosX = rnd.Next(0, (int)Window.Current.Bounds.Width - 20);
-                await startCreatingEnemies(randomPosX);
-            }
+           
 
         }
 
@@ -77,7 +76,7 @@ namespace Flames
             gameScreen.Children.Add(circleEnemy.flameImage);
 
 
-            var anim = circleEnemy.flameImage.Offset(randomPosX, (float)(gameScreen.ActualHeight - circleEnemy.flameImage.Height - mainCharacter.ActualHeight + 10), 400, 0, EasingType.Sine);
+            var anim = circleEnemy.flameImage.Offset(randomPosX, (float)(gameScreen.ActualHeight - circleEnemy.flameImage.Height - mainCharacter.ActualHeight + 10), flameDuration, 0, EasingType.Sine);
 
             anim.Completed += Anim_Completed;
             circleEnemy.isMoving = true;
@@ -156,7 +155,7 @@ namespace Flames
             else
             {
                 gameLoopEnabled = false;
-
+                flamesLeftBehind.Add(flame);
             }
 
         }
@@ -175,7 +174,8 @@ namespace Flames
 
         private async void Page_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (e.Key == Windows.System.VirtualKey.Right)
+            if (e.Key == Windows.System.VirtualKey.Right || e.Key == Windows.System.VirtualKey.GamepadLeftThumbstickRight ||
+                e.Key == Windows.System.VirtualKey.GamepadDPadRight)
             {
                 if (gameLoopEnabled)
                 {
@@ -205,7 +205,8 @@ namespace Flames
                 }
             }
 
-            if (e.Key == Windows.System.VirtualKey.Left)
+            if (e.Key == Windows.System.VirtualKey.Left || e.Key == Windows.System.VirtualKey.GamepadLeftThumbstickLeft ||
+                e.Key == Windows.System.VirtualKey.GamepadDPadLeft)
             {
                 if (gameLoopEnabled)
                 {
@@ -241,7 +242,8 @@ namespace Flames
 
         private async void Page_KeyUp(object sender, KeyRoutedEventArgs e)
         {
-            if (e.Key == Windows.System.VirtualKey.Right)
+            if (e.Key == Windows.System.VirtualKey.Right || e.Key == Windows.System.VirtualKey.GamepadLeftThumbstickRight || 
+                e.Key == Windows.System.VirtualKey.GamepadDPadRight)
             {
                 if (isMovingRight == true)
                 {
@@ -249,13 +251,111 @@ namespace Flames
                 }
             }
 
-            if (e.Key == Windows.System.VirtualKey.Left)
+            if (e.Key == Windows.System.VirtualKey.Left || e.Key == Windows.System.VirtualKey.GamepadLeftThumbstickLeft ||
+                e.Key == Windows.System.VirtualKey.GamepadDPadLeft)
             {
                 if (isMovingLeft == true)
                 {
                     isMovingLeft = false;
                 }
             }
+        }
+
+        private async void newGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mainMenuFadeAnim = mainMenu.Fade(0);
+            mainMenuFadeAnim.Completed += MainMenuFadeAnim_Completed;
+            await mainMenuFadeAnim.StartAsync();
+        }
+
+        private void MainMenuFadeAnim_Completed(object sender, AnimationSetCompletedEventArgs e)
+        {
+            mainMenu.Visibility = Visibility.Collapsed;
+            startGame();
+        }
+
+        private async void startGame()
+        {
+            if (flamesLeftBehind.Count > 0)
+            {
+                foreach (var element in flamesLeftBehind)
+                {
+                    gameScreen.Children.Remove(element);
+                }
+
+            }
+
+            characterOffset = 0;
+            points = 0;
+            pointsTextBlock.Text = "";
+            await mainCharacter.Offset(characterOffset, duration: 0).StartAsync();
+            flame.flames = new ObservableCollection<flame>();
+            gameLoopEnabled = true;
+
+
+            while (gameLoopEnabled)
+            {
+                Random rnd = new Random();
+                float randomPosX = rnd.Next(0, (int)Window.Current.Bounds.Width - 20);
+                await startCreatingEnemies(randomPosX);
+            }
+
+            showGameOverScreen();
+        }
+
+        private async void showGameOverScreen()
+        {
+            endPointsScoreTextBlock.Text = $"Points: {points}";
+            gameOverScreen.Visibility = Visibility.Visible;
+            await gameOverScreen.Fade(1).StartAsync();
+        }
+
+        private async void restartGameButton_Click(object sender, RoutedEventArgs e)
+        {
+           
+           
+           
+            //Rectangle mainCharacter = new Rectangle();
+            //mainCharacter.Height = 20;
+            //mainCharacter.Width = 20;
+            //mainCharacter.HorizontalAlignment = HorizontalAlignment.Left;
+            //mainCharacter.VerticalAlignment = VerticalAlignment.Bottom;
+            //mainCharacter.Fill = new SolidColorBrush(Colors.Red);
+            //mainCharacter.Name = "mainCharacter";
+            //gameScreen.Children.Add(mainCharacter);
+
+          
+
+            var gameOverFadeAnim = gameOverScreen.Fade(0);
+            gameOverFadeAnim.Completed += GameOverFadeAnim_Completed;
+            await gameOverFadeAnim.StartAsync();
+        }
+
+        private void GameOverFadeAnim_Completed(object sender, AnimationSetCompletedEventArgs e)
+        {
+            gameOverScreen.Visibility = Visibility.Collapsed;
+            startGame();
+        }
+
+        private async void mainMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            mainMenu.Visibility = Visibility.Visible;
+           
+
+            var gameOverScreenToMainAnim = mainMenu.Fade(1);
+            gameOverScreenToMainAnim.Completed += GameOverScreenToMainAnim_Completed;
+            await gameOverScreenToMainAnim.StartAsync();
+        }
+
+        private void GameOverScreenToMainAnim_Completed(object sender, AnimationSetCompletedEventArgs e)
+        {
+            gameOverScreen.Visibility = Visibility.Collapsed;
+            gameOverScreen.Opacity = 0; 
+        }
+
+        private void exitButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.Current.Exit();
         }
     }
 }
