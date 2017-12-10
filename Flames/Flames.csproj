@@ -112,6 +112,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\flame.png" />
+    <Content Include="Assets\fireSound.mp3" />
+    <Content Include="Assets\gameMusic.wav" />
+    <Content Include="Assets\mainMenuMusic.mp3" />
+    <Content Include="Assets\gameOverMusic.mp3" />
     <Content Include="Assets\MainLogo.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
