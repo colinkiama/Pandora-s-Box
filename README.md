@@ -3,7 +3,7 @@
 Game made for UoE Game Jam 2017
 
 ## System Requirements:
-Windows 10 Anniversary Update or Higher (There's a 99% chance you on the latest version already because of the way Microsoft pushes the automatic updates lol)
+Windows 10 Anniversary Update or Higher (There's a 99% chance you on the latest version already because of the way Microsoft pushes the automatic updates.)
 
 ## How To Play:
 Can be played with a Keyboard or X-Input Controller (e.g Xbox One Controller)
