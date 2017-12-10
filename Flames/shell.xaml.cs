@@ -9,6 +9,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -30,6 +32,12 @@ namespace Flames
     /// </summary>
     public sealed partial class shell : Page
     {
+        public static MediaPlayer mainSound = new MediaPlayer { AudioCategory = MediaPlayerAudioCategory.GameMedia, IsLoopingEnabled = true, Volume = 100 };
+        public static MediaPlayer soundFX = new MediaPlayer { AudioCategory = MediaPlayerAudioCategory.GameEffects, IsLoopingEnabled = false, Volume = 0.6 };
+        public static MediaSource fireSoundSource = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/finalFireSoundEffect.wav"));
+        public static MediaSource mainMenuMusicSource = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/mainMenuMusic.mp3"));
+        public static MediaSource gameOverMusicSource = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/gameOverMusic.mp3"));
+        public static MediaSource gameMusicSource = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/gameMusic.wav"));
 
         int characterOffset = 0;
         bool isMovingRight = false;
@@ -49,11 +57,12 @@ namespace Flames
         }
 
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-           
-
+            mainSound.Source = mainMenuMusicSource;
+            mainSound.Play();
+            soundFX.Source = fireSoundSource;
 
            
 
@@ -81,8 +90,8 @@ namespace Flames
             anim.Completed += Anim_Completed;
             circleEnemy.isMoving = true;
 
-
             await anim.StartAsync();
+            soundFX.Play();
 
         }
 
@@ -276,6 +285,8 @@ namespace Flames
 
         private async void startGame()
         {
+            mainSound.Source = gameMusicSource;
+            mainSound.Play();
             if (flamesLeftBehind.Count > 0)
             {
                 foreach (var element in flamesLeftBehind)
@@ -308,6 +319,8 @@ namespace Flames
             endPointsScoreTextBlock.Text = $"Points: {points}";
             gameOverScreen.Visibility = Visibility.Visible;
             await gameOverScreen.Fade(1).StartAsync();
+            mainSound.Source = gameOverMusicSource;
+            mainSound.Play();
         }
 
         private async void restartGameButton_Click(object sender, RoutedEventArgs e)
@@ -345,6 +358,8 @@ namespace Flames
             var gameOverScreenToMainAnim = mainMenu.Fade(1);
             gameOverScreenToMainAnim.Completed += GameOverScreenToMainAnim_Completed;
             await gameOverScreenToMainAnim.StartAsync();
+            mainSound.Source = mainMenuMusicSource;
+            mainSound.Play();
         }
 
         private void GameOverScreenToMainAnim_Completed(object sender, AnimationSetCompletedEventArgs e)
