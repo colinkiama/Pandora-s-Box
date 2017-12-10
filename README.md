@@ -6,6 +6,7 @@ Game made for UoE Game Jam 2017
 Windows 10 Anniversary Update or Higher (There's a 99% chance you're on the latest version already because of the way Microsoft pushes the automatic updates)
 
 ## How To Play:
+You can enable Full Screen Mode by pressing Windows + Shift + Enter
 Can be played with a Keyboard or X-Input Controller (e.g Xbox One Controller)
 
 You control the box by pressing the left and right arrows (or left and right on Controller D-Pad or Left Stick). 
