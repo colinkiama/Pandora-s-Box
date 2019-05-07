@@ -2,6 +2,7 @@
 using Flames.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -22,13 +23,13 @@ namespace Flames.Model
 
         public Player(Compositor compositor)
         {
-            
+
             Visual = compositor.CreateSpriteVisual();
             Visual.Brush = compositor.CreateColorBrush(Colors.Purple);
             Visual.Size = new Vector2(40, 40);
         }
 
-        public void Accelerate(float deltaTimeMilliseconds, Direction movementDirection = Direction.None)
+        public void Accelerate(int deltaTimeMilliseconds, Direction movementDirection = Direction.None)
         {
             switch (movementDirection)
             {
@@ -46,7 +47,7 @@ namespace Flames.Model
             UpdateVelocityInTime(deltaTimeMilliseconds);
         }
 
-        private void UpdateVelocityInTime(float deltaTimeMilliseconds)
+        private void UpdateVelocityInTime(int deltaTimeMilliseconds)
         {
             // Final Velocity = initial velocity + acceleration * time passed
             float deltaTimeInSeconds = deltaTimeMilliseconds / 1000f;
@@ -55,6 +56,7 @@ namespace Flames.Model
             {
                 velocityToUse = MaxVelocity;
             }
+            Velocity = velocityToUse;
         }
 
         public void NearMiss(float dodgeOffset)
@@ -63,9 +65,38 @@ namespace Flames.Model
             // was relative to the player.
         }
 
-        public void RenderPosition()
+        public void RenderPosition(float frameProgress)
         {
-            Visual.Offset += new Vector3(Velocity, Visual.Offset.Y, 0);
+            float currentX = Visual.Offset.X;
+            float newXValue = TryCheckForLowValue(currentX);
+            newXValue = TryCheckForHighValue(currentX);
+            // I want to move 4px per second. frame progress uses milliseconds
+            newXValue *= frameProgress;
+            Visual.Offset += new Vector3(newXValue, Visual.Offset.Y, 0);
+        }
+
+        private float TryCheckForLowValue(float currentX)
+        {
+            float result = currentX + Velocity;
+            if (result < 0)
+            {
+                result = 0;
+            }
+
+            return result;
+
+        }
+
+        private float TryCheckForHighValue(float currentX)
+        {
+            float result = currentX + Velocity;
+            // Some kind of max limit
+            if (result > 300)
+            {
+                result = 300;
+            }
+
+            return result;
         }
     }
 }

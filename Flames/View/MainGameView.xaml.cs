@@ -28,19 +28,18 @@ namespace Flames.View
     {
         const float milliSecondsInSeconds = 1000;
         bool willQuit = false;
+        int msPerUpdate = 16;
         // Environment.TickCount updates at approximately 16ms;
-        const float highResolutionTimerFrequency = 16.0f;
-
-        float _deltaTimeMilliseconds;
+        float _totalMillisecondsPassed = 0;
+        int frames = 0;
+        float millisecondsInASecond = 1000;
+        int _deltaTimeMilliseconds = 0;
         PhysicsHelper _physicsHelper;
         CollisionHelper _collisionHelper;
 
         public MainGameView()
         {
             this.InitializeComponent();
-
-            // Targeting 60FPS at first
-            _deltaTimeMilliseconds = milliSecondsInSeconds / 60.0f;
             ViewSpaceHelper.Create(rootStackPanel);
             _physicsHelper = new PhysicsHelper(ViewSpaceHelper.Instance.ViewSpace);
             _collisionHelper = new CollisionHelper(ViewSpaceHelper.Instance.ViewSpace);
@@ -54,30 +53,62 @@ namespace Flames.View
 
 
 
-        private async Task StartGame()
+        private void StartGame()
         {
-            int beginMilliseconds = Environment.TickCount;
+
+            int previous = GetCurrentTime();
+            int lag = 0;
             while (willQuit == false)
             {
-                await GameLoop(_deltaTimeMilliseconds);
-                int endMilliseconds = Environment.TickCount;
-                _deltaTimeMilliseconds = (float)(endMilliseconds - beginMilliseconds) /
-                    highResolutionTimerFrequency;
-                beginMilliseconds = endMilliseconds;
+                int current = GetCurrentTime();
+                int elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
+                _deltaTimeMilliseconds += elapsed;
+
+                Direction movementDirection = HIDHelper.Instance.PollInputs();
+
+                while (lag >= msPerUpdate)
+                {
+                    _physicsHelper.UpdatePosition(movementDirection, elapsed);
+                    lag -= msPerUpdate;
+                }
+
+                _collisionHelper.DetectCollision();
+                ViewSpaceHelper.Instance.RenderPositions(lag / msPerUpdate);
+
+                frames++;
+                UpdateFPS();
+                //GameLoop(_deltaTimeMilliseconds);
+                
+
+
             }
 
         }
 
-        private async Task GameLoop(float deltaTimeMilliseconds)
+        private int GetCurrentTime()
         {
-            Direction movementDirection = HIDHelper.Instance.PollInputs();
-            await Task.Run(() =>
-            {
+            return Environment.TickCount;
+        }
 
-                _physicsHelper.UpdatePosition(movementDirection, deltaTimeMilliseconds);
-                _collisionHelper.DetectCollision();
-                ViewSpaceHelper.Instance.RenderPositions();
-            });
+        private void WriteMilliseconds(int endMilliseconds, int beginMilliseconds)
+        {
+            Debug.WriteLine($"Milliseconds in frame: {endMilliseconds - beginMilliseconds}");
+        }
+
+        private void UpdateFPS()
+        {
+            _totalMillisecondsPassed += _deltaTimeMilliseconds;
+            Debug.WriteLine($"Total milliseconds passed: {_totalMillisecondsPassed}");
+            float seconds = _totalMillisecondsPassed / millisecondsInASecond;
+            Debug.WriteLine($"Frame: {frames}");
+            Debug.WriteLine($"FPS: {frames / seconds}");
+        }
+
+        private void GameLoop(float deltaTimeMilliseconds)
+        {
+
         }
 
         private void QuitButton_Click(object sender, RoutedEventArgs e)
@@ -85,9 +116,9 @@ namespace Flames.View
             willQuit = true;
         }
 
-        private async void StartButton_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            await StartGame();
+            StartGame();
         }
     }
 }

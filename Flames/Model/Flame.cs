@@ -17,14 +17,16 @@ namespace Flames.Model
         public float Velocity { get; set; }
         public float MaxSpeed { get; set; }
 
-        public void Accelerate(float deltaTimeMilliseconds, Direction movementDirection = Direction.None)
+        public void Accelerate(int deltaTimeMilliseconds, Direction movementDirection = Direction.None)
         {
             throw new NotImplementedException();
         }
 
-        public void RenderPosition()
+        public void RenderPosition(float frameProgress)
         {
             throw new NotImplementedException();
         }
+
+      
     }
 }

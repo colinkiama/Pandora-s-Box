@@ -11,14 +11,13 @@ namespace Flames.Gameplay
     public class PhysicsHelper
     {
         internal List<IPhysicsObject> InGameObjects;
-        float timePassed = 0;
 
         public PhysicsHelper(List<IPhysicsObject> ViewSpace)
         {
             InGameObjects = ViewSpace;
         }
 
-        public void UpdatePosition(Direction movementDirection, float deltaTimeMilliseconds)
+        public void UpdatePosition(Direction movementDirection, int deltaTimeMilliseconds)
         {
             for (int i = 0; i < InGameObjects.Count; i++)
             {
@@ -26,5 +25,6 @@ namespace Flames.Gameplay
             }
         }
 
+       
     }
 }
