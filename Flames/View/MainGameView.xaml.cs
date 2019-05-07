@@ -30,9 +30,9 @@ namespace Flames.View
         bool willQuit = false;
         int msPerUpdate = 16;
         // Environment.TickCount updates at approximately 16ms;
-        float _totalMillisecondsPassed = 0;
+        int _totalMillisecondsPassed = 0;
         int frames = 0;
-        float millisecondsInASecond = 1000;
+        int millisecondsInASecond = 1000;
         int _deltaTimeMilliseconds = 0;
         PhysicsHelper _physicsHelper;
         CollisionHelper _collisionHelper;
@@ -53,20 +53,25 @@ namespace Flames.View
 
 
 
-        private void StartGame()
+        private async Task StartGame()
         {
 
             int previous = GetCurrentTime();
             int lag = 0;
             while (willQuit == false)
             {
+                int elapsed = 0;
+
+                frames++;
                 int current = GetCurrentTime();
-                int elapsed = current - previous;
+                elapsed = current - previous;
                 previous = current;
                 lag += elapsed;
                 _deltaTimeMilliseconds += elapsed;
 
+
                 Direction movementDirection = HIDHelper.Instance.PollInputs();
+
 
                 while (lag >= msPerUpdate)
                 {
@@ -75,12 +80,17 @@ namespace Flames.View
                 }
 
                 _collisionHelper.DetectCollision();
-                ViewSpaceHelper.Instance.RenderPositions(lag / msPerUpdate);
 
-                frames++;
+                await Task.Run(() =>  ViewSpaceHelper.Instance.RenderPositions(lag / msPerUpdate));
+
+
+
+
+
+
                 UpdateFPS();
                 //GameLoop(_deltaTimeMilliseconds);
-                
+
 
 
             }
@@ -101,7 +111,8 @@ namespace Flames.View
         {
             _totalMillisecondsPassed += _deltaTimeMilliseconds;
             Debug.WriteLine($"Total milliseconds passed: {_totalMillisecondsPassed}");
-            float seconds = _totalMillisecondsPassed / millisecondsInASecond;
+            double seconds = _totalMillisecondsPassed / millisecondsInASecond;
+            Debug.WriteLine($"Seconds: {seconds}");
             Debug.WriteLine($"Frame: {frames}");
             Debug.WriteLine($"FPS: {frames / seconds}");
         }
@@ -116,9 +127,10 @@ namespace Flames.View
             willQuit = true;
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            StartGame();
+            await StartGame();
+            //StartGame();
         }
     }
 }
