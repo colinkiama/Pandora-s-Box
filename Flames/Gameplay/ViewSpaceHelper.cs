@@ -25,6 +25,8 @@ namespace Flames.Gameplay
         private ViewSpaceHelper(Panel view)
         {
             View = view;
+            ViewSpace = new List<IPhysicsObject>();
+
             view.Loaded += (s, e) =>
             {
                 var panel = (Panel)s;
@@ -32,8 +34,8 @@ namespace Flames.Gameplay
 
                 var player = new Player(panelVisual.Compositor);
                 ElementCompositionPreview.SetElementChildVisual(panel, player.Visual);
-                //ViewSpace = new List<IPhysicsObject>();
-                //ViewSpace.Add(player);
+                
+                ViewSpace.Add(player);
             };
         }
 

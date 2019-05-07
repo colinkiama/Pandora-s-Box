@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -33,16 +34,16 @@ namespace Flames.View
         float _deltaTimeMilliseconds;
         PhysicsHelper _physicsHelper;
         CollisionHelper _collisionHelper;
-        
+
         public MainGameView()
         {
             this.InitializeComponent();
-            
+
             // Targeting 60FPS at first
             _deltaTimeMilliseconds = milliSecondsInSeconds / 60.0f;
             ViewSpaceHelper.Create(rootStackPanel);
-            //_physicsHelper = new PhysicsHelper(ViewSpaceHelper.Instance.ViewSpace);
-            //_collisionHelper = new CollisionHelper(ViewSpaceHelper.Instance.ViewSpace);
+            _physicsHelper = new PhysicsHelper(ViewSpaceHelper.Instance.ViewSpace);
+            _collisionHelper = new CollisionHelper(ViewSpaceHelper.Instance.ViewSpace);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -51,28 +52,32 @@ namespace Flames.View
 
         }
 
-        
 
-        private void StartGame()
+
+        private async Task StartGame()
         {
             int beginMilliseconds = Environment.TickCount;
-            //while (willQuit == false)
-            //{
-            //    GameLoop(_deltaTimeMilliseconds);
-            //    int endMilliseconds = Environment.TickCount;
-            //    _deltaTimeMilliseconds = (float)(endMilliseconds - beginMilliseconds) /
-            //        highResolutionTimerFrequency;
-            //    beginMilliseconds = endMilliseconds;
-            //}
+            while (willQuit == false)
+            {
+                await GameLoop(_deltaTimeMilliseconds);
+                int endMilliseconds = Environment.TickCount;
+                _deltaTimeMilliseconds = (float)(endMilliseconds - beginMilliseconds) /
+                    highResolutionTimerFrequency;
+                beginMilliseconds = endMilliseconds;
+            }
 
         }
 
-        private void GameLoop(float deltaTimeMilliseconds)
+        private async Task GameLoop(float deltaTimeMilliseconds)
         {
             Direction movementDirection = HIDHelper.Instance.PollInputs();
-            _physicsHelper.UpdatePosition(movementDirection, deltaTimeMilliseconds);
-            _collisionHelper.DetectCollision();
-            ViewSpaceHelper.Instance.RenderPositions();
+            await Task.Run(() =>
+            {
+
+                _physicsHelper.UpdatePosition(movementDirection, deltaTimeMilliseconds);
+                _collisionHelper.DetectCollision();
+                ViewSpaceHelper.Instance.RenderPositions();
+            });
         }
 
         private void QuitButton_Click(object sender, RoutedEventArgs e)
@@ -80,9 +85,9 @@ namespace Flames.View
             willQuit = true;
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            StartGame();
+            await StartGame();
         }
     }
 }
