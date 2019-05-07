@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Flames.View.MainGameView"
+    x:Class="Flames.View.MainMenuView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Flames.View"
@@ -8,12 +8,11 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel Name="rootStackPanel">
-        <Button Content="Quit"
-                Name="QuitButton"
-                Click="QuitButton_Click"/>
-        <Button Content="Start"
-                Name="StartButton"
-                Click="StartButton_Click"/>
-    </StackPanel>
+    <Grid>
+        <Button Name="StartButton"
+                Click="StartButton_Click"
+                Content="Start Game"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+    </Grid>
 </Page>

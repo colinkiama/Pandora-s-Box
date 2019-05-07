@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Composition;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 
@@ -24,11 +25,16 @@ namespace Flames.Gameplay
         private ViewSpaceHelper(Panel view)
         {
             View = view;
-            var player = new Player();
-            AddPlayerToView(player);
+            view.Loaded += (s, e) =>
+            {
+                var panel = (Panel)s;
+                var panelVisual = ElementCompositionPreview.GetElementVisual(panel);
 
-            ViewSpace = new List<IPhysicsObject>();
-            ViewSpace.Add(player);
+                var player = new Player(panelVisual.Compositor);
+                ElementCompositionPreview.SetElementChildVisual(panel, player.Visual);
+                //ViewSpace = new List<IPhysicsObject>();
+                //ViewSpace.Add(player);
+            };
         }
 
         private void AddPlayerToView(Player player)

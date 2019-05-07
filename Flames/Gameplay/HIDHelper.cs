@@ -93,7 +93,6 @@ namespace Flames.Gameplay
             {
                 currentDirection = Direction.Right;
             }
-
             return currentDirection;
         }
     }

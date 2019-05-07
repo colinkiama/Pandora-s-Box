@@ -26,7 +26,7 @@ namespace Flames.View
     public sealed partial class MainGameView : Page
     {
         const float milliSecondsInSeconds = 1000;
-        
+        bool willQuit = false;
         // Environment.TickCount updates at approximately 16ms;
         const float highResolutionTimerFrequency = 16.0f;
 
@@ -37,47 +37,34 @@ namespace Flames.View
         public MainGameView()
         {
             this.InitializeComponent();
+            
             // Targeting 60FPS at first
             _deltaTimeMilliseconds = milliSecondsInSeconds / 60.0f;
             ViewSpaceHelper.Create(rootStackPanel);
-            _physicsHelper = new PhysicsHelper(ViewSpaceHelper.Instance.ViewSpace);
-            _collisionHelper = new CollisionHelper(ViewSpaceHelper.Instance.ViewSpace);
+            //_physicsHelper = new PhysicsHelper(ViewSpaceHelper.Instance.ViewSpace);
+            //_collisionHelper = new CollisionHelper(ViewSpaceHelper.Instance.ViewSpace);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            StartGame();
 
         }
 
-        private void Instance_ButtonReleased(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key == Windows.System.VirtualKey.Down)
-            {
-                Debug.WriteLine("Pressed");
-            }
-        }
-
-        private void Instance_ButtonPressedDown(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key == Windows.System.VirtualKey.Down)
-            {
-                Debug.WriteLine("HOLD IT DOWN!");
-            }
-        }
+        
 
         private void StartGame()
         {
             int beginMilliseconds = Environment.TickCount;
-            while (true)
-            {
-                GameLoop(_deltaTimeMilliseconds);
-                int endMilliseconds = Environment.TickCount;
-                _deltaTimeMilliseconds = (float)(endMilliseconds - beginMilliseconds) /
-                    highResolutionTimerFrequency;
-                beginMilliseconds = endMilliseconds;
-            }
+            //while (willQuit == false)
+            //{
+            //    GameLoop(_deltaTimeMilliseconds);
+            //    int endMilliseconds = Environment.TickCount;
+            //    _deltaTimeMilliseconds = (float)(endMilliseconds - beginMilliseconds) /
+            //        highResolutionTimerFrequency;
+            //    beginMilliseconds = endMilliseconds;
+            //}
+
         }
 
         private void GameLoop(float deltaTimeMilliseconds)
@@ -86,6 +73,16 @@ namespace Flames.View
             _physicsHelper.UpdatePosition(movementDirection, deltaTimeMilliseconds);
             _collisionHelper.DetectCollision();
             ViewSpaceHelper.Instance.RenderPositions();
+        }
+
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+            willQuit = true;
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartGame();
         }
     }
 }

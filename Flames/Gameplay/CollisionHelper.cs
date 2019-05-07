@@ -18,7 +18,7 @@ namespace Flames.Gameplay
 
         internal void DetectCollision()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

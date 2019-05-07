@@ -13,7 +13,6 @@ namespace Flames.Model
 {
     public class Player : IPhysicsObject
     {
-        private Compositor _compositor;
         public SpriteVisual Visual { get; set; }
         public float PlayerAcceleration { get; set; }
         public float Velocity { get; set; }
@@ -21,10 +20,11 @@ namespace Flames.Model
         const float AccelerationPerSecond = -4f;
 
 
-        public Player()
+        public Player(Compositor compositor)
         {
-            Visual = _compositor.CreateSpriteVisual();
-            Visual.Brush = _compositor.CreateColorBrush(Colors.Purple);
+            
+            Visual = compositor.CreateSpriteVisual();
+            Visual.Brush = compositor.CreateColorBrush(Colors.Purple);
             Visual.Size = new Vector2(40, 40);
         }
 
