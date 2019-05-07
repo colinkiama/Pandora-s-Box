@@ -6,17 +6,27 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Composition;
 
 namespace Flames.Model
 {
     public class Player : IPhysicsObject
     {
+        private Compositor _compositor;
         public SpriteVisual Visual { get; set; }
         public float PlayerAcceleration { get; set; }
         public float Velocity { get; set; }
         const float MaxVelocity = 12.0f;
         const float AccelerationPerSecond = -4f;
+
+
+        public Player()
+        {
+            Visual = _compositor.CreateSpriteVisual();
+            Visual.Brush = _compositor.CreateColorBrush(Colors.Purple);
+            Visual.Size = new Vector2(40, 40);
+        }
 
         public void Accelerate(float deltaTimeMilliseconds, Direction movementDirection = Direction.None)
         {

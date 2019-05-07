@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Gaming.Input;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
@@ -81,7 +83,18 @@ namespace Flames.Gameplay
 
         internal Direction PollInputs()
         {
-            return Direction.Right;
+            Direction currentDirection = Direction.None;
+
+            if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Left).HasFlag(CoreVirtualKeyStates.Down))
+            {
+                currentDirection = Direction.Left;
+            }
+            else if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Right).HasFlag(CoreVirtualKeyStates.Down))
+            {
+                currentDirection = Direction.Right;
+            }
+
+            return currentDirection;
         }
     }
 }
