@@ -1,4 +1,5 @@
 ﻿using Flames.Enum;
+using Flames.Gameplay;
 using Flames.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,18 +19,38 @@ namespace Flames.Model
         public float PlayerAcceleration { get; set; }
         public float Velocity { get; set; }
         const float MaxVelocity = 12.0f;
-        const float AccelerationPerSecond = -4f;
+        const float AccelerationPerSecond = 4f;
 
 
         public Player(Compositor compositor)
         {
-
             Visual = compositor.CreateSpriteVisual();
             Visual.Brush = compositor.CreateColorBrush(Colors.Purple);
             Visual.Size = new Vector2(40, 40);
+            HIDHelper.Instance.LeftDown += Instance_LeftDown;
+            HIDHelper.Instance.RightDown += Instance_RightDown;
         }
 
-        public void Accelerate(int deltaTimeMilliseconds, Direction movementDirection = Direction.None)
+        private void Instance_RightDown(object sender, Windows.UI.Core.KeyEventArgs e)
+        {
+            float currentX = Visual.Offset.X + AccelerationPerSecond;
+            currentX = TryCheckForLowValue(currentX);
+            currentX = TryCheckForHighValue(currentX);
+
+            
+            Visual.Offset = new Vector3(currentX, 0, 0);
+        }
+
+        private void Instance_LeftDown(object sender, Windows.UI.Core.KeyEventArgs e)
+        {
+            float currentX = Visual.Offset.X - AccelerationPerSecond;
+            currentX = TryCheckForLowValue(currentX);
+            currentX = TryCheckForHighValue(currentX);
+
+            Visual.Offset = new Vector3(currentX, 0, 0);
+        }
+
+        public void Accelerate(Direction movementDirection = Direction.None)
         {
             switch (movementDirection)
             {
@@ -44,14 +65,13 @@ namespace Flames.Model
                     break;
             }
 
-            UpdateVelocityInTime(deltaTimeMilliseconds);
+            UpdateVelocityInTime();
         }
 
-        private void UpdateVelocityInTime(int deltaTimeMilliseconds)
+        private void UpdateVelocityInTime()
         {
             // Final Velocity = initial velocity + acceleration * time passed
-            float deltaTimeInSeconds = deltaTimeMilliseconds / 1000f;
-            float velocityToUse = Velocity + PlayerAcceleration * deltaTimeMilliseconds;
+            float velocityToUse = Velocity + PlayerAcceleration;
             if (velocityToUse > MaxVelocity)
             {
                 velocityToUse = MaxVelocity;
@@ -65,14 +85,9 @@ namespace Flames.Model
             // was relative to the player.
         }
 
-        public void RenderPosition(float frameProgress)
+        public void RenderPosition()
         {
-            float currentX = Visual.Offset.X;
-            float newXValue = TryCheckForLowValue(currentX);
-            newXValue = TryCheckForHighValue(currentX);
-            // I want to move 4px per second. frame progress uses milliseconds
-            newXValue *= frameProgress;
-            Visual.Offset += new Vector3(newXValue, Visual.Offset.Y, 0);
+
         }
 
         private float TryCheckForLowValue(float currentX)

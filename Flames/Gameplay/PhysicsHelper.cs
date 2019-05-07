@@ -17,11 +17,11 @@ namespace Flames.Gameplay
             InGameObjects = ViewSpace;
         }
 
-        public void UpdatePosition(Direction movementDirection, int deltaTimeMilliseconds)
+        public void UpdatePosition(Direction movementDirection)
         {
             for (int i = 0; i < InGameObjects.Count; i++)
             {
-                InGameObjects[i].Accelerate(deltaTimeMilliseconds, movementDirection);
+                InGameObjects[i].Accelerate(movementDirection);
             }
         }
 

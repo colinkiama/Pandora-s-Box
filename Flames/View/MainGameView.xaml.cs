@@ -28,12 +28,7 @@ namespace Flames.View
     {
         const float milliSecondsInSeconds = 1000;
         bool willQuit = false;
-        int msPerUpdate = 16;
         // Environment.TickCount updates at approximately 16ms;
-        int _totalMillisecondsPassed = 0;
-        int frames = 0;
-        int millisecondsInASecond = 1000;
-        int _deltaTimeMilliseconds = 0;
         PhysicsHelper _physicsHelper;
         CollisionHelper _collisionHelper;
 
@@ -56,40 +51,22 @@ namespace Flames.View
         private async Task StartGame()
         {
 
-            int previous = GetCurrentTime();
-            int lag = 0;
             while (willQuit == false)
             {
-                int elapsed = 0;
-
-                frames++;
-                int current = GetCurrentTime();
-                elapsed = current - previous;
-                previous = current;
-                lag += elapsed;
-                _deltaTimeMilliseconds += elapsed;
-
-
-                Direction movementDirection = HIDHelper.Instance.PollInputs();
-
-
-                while (lag >= msPerUpdate)
+                
+                await Task.Run(() =>
                 {
-                    _physicsHelper.UpdatePosition(movementDirection, elapsed);
-                    lag -= msPerUpdate;
-                }
+                    //_physicsHelper.UpdatePosition(movementDirection);
+                    _collisionHelper.DetectCollision();
+                });
 
-                _collisionHelper.DetectCollision();
-
-                await Task.Run(() =>  ViewSpaceHelper.Instance.RenderPositions(lag / msPerUpdate));
+                ViewSpaceHelper.Instance.RenderPositions();
 
 
 
 
 
 
-                UpdateFPS();
-                //GameLoop(_deltaTimeMilliseconds);
 
 
 
@@ -97,30 +74,6 @@ namespace Flames.View
 
         }
 
-        private int GetCurrentTime()
-        {
-            return Environment.TickCount;
-        }
-
-        private void WriteMilliseconds(int endMilliseconds, int beginMilliseconds)
-        {
-            Debug.WriteLine($"Milliseconds in frame: {endMilliseconds - beginMilliseconds}");
-        }
-
-        private void UpdateFPS()
-        {
-            _totalMillisecondsPassed += _deltaTimeMilliseconds;
-            Debug.WriteLine($"Total milliseconds passed: {_totalMillisecondsPassed}");
-            double seconds = _totalMillisecondsPassed / millisecondsInASecond;
-            Debug.WriteLine($"Seconds: {seconds}");
-            Debug.WriteLine($"Frame: {frames}");
-            Debug.WriteLine($"FPS: {frames / seconds}");
-        }
-
-        private void GameLoop(float deltaTimeMilliseconds)
-        {
-
-        }
 
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {

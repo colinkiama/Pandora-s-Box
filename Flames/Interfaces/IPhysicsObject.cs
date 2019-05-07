@@ -13,7 +13,7 @@ namespace Flames.Interfaces
         SpriteVisual Visual { get; set; }
         float PlayerAcceleration { get; set; }
 
-        void Accelerate(int deltaTimeMilliseconds, Direction movementDirection = Direction.None);
-        void RenderPosition(float frameProgress);
+        void Accelerate(Direction movementDirection = Direction.None);
+        void RenderPosition();
     }
 }

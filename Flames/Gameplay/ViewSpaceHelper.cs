@@ -45,11 +45,11 @@ namespace Flames.Gameplay
         }
 
         
-        public void RenderPositions(float renderProgress)
+        public void RenderPositions()
         {
             for (int i = 0; i < ViewSpace.Count; i++)
             {
-                ViewSpace[i].RenderPosition(renderProgress);
+                ViewSpace[i].RenderPosition();
             }
         }
     }

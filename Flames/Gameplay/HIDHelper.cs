@@ -18,6 +18,9 @@ namespace Flames.Gameplay
             new Lazy<HIDHelper>(() => new HIDHelper());
 
         public static HIDHelper Instance = lazy.Value;
+        public event EventHandler<KeyEventArgs> LeftDown;
+        public event EventHandler<KeyEventArgs> RightDown;
+
 
         private readonly object myLock = new object();
         private List<Gamepad> myGamepads = new List<Gamepad>();
@@ -27,6 +30,37 @@ namespace Flames.Gameplay
         {
             Gamepad.GamepadAdded += Gamepad_GamepadAdded;
             Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
+            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+            //Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
+        }
+
+
+        private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
+        {
+            
+            switch (args.VirtualKey)
+            {
+
+                case VirtualKey.Left:
+                    LeftDown?.Invoke(this, args);
+                    break;
+                case VirtualKey.GamepadDPadLeft:
+                    LeftDown?.Invoke(this, args);
+                    break;
+                case VirtualKey.GamepadLeftThumbstickLeft:
+                    LeftDown?.Invoke(this, args);
+                    break;
+                case VirtualKey.Right:
+                    RightDown?.Invoke(this, args);
+                    break;
+                case VirtualKey.GamepadDPadRight:
+                    RightDown?.Invoke(this, args);
+                    break;
+                case VirtualKey.GamepadLeftThumbstickRight:
+                    RightDown?.Invoke(this, args);
+                    break;
+            }
+
         }
 
         private void Gamepad_GamepadRemoved(object sender, Gamepad e)
@@ -60,9 +94,9 @@ namespace Flames.Gameplay
             }
         }
 
-        
 
-        
+
+
         private void GetGamepads()
         {
             lock (myLock)
@@ -85,11 +119,11 @@ namespace Flames.Gameplay
         {
             Direction currentDirection = Direction.None;
 
-            if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Left).HasFlag(CoreVirtualKeyStates.Down))
+            if (Window.Current.CoreWindow.GetAsyncKeyState(VirtualKey.Left).HasFlag(CoreVirtualKeyStates.Down))
             {
                 currentDirection = Direction.Left;
             }
-            else if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Right).HasFlag(CoreVirtualKeyStates.Down))
+            else if (Window.Current.CoreWindow.GetAsyncKeyState(VirtualKey.Right).HasFlag(CoreVirtualKeyStates.Down))
             {
                 currentDirection = Direction.Right;
             }
