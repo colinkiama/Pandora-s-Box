@@ -14,5 +14,6 @@ namespace Flames.Interfaces
         float PlayerAcceleration { get; set; }
 
         void Accelerate(float deltaTimeMilliseconds, Direction movementDirection = Direction.None);
+        void RenderPosition();
     }
 }

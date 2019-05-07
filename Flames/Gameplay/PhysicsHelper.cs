@@ -12,9 +12,9 @@ namespace Flames.Gameplay
     {
         internal List<IPhysicsObject> InGameObjects = new List<IPhysicsObject>();
         float timePassed = 0;
+
         public void UpdatePosition(Direction movementDirection, float deltaTimeMilliseconds)
         {
-
             for (int i = 0; i < InGameObjects.Count; i++)
             {
                 InGameObjects[i].Accelerate(deltaTimeMilliseconds, movementDirection);

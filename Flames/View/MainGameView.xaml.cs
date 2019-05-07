@@ -1,4 +1,5 @@
-﻿using Flames.Gameplay;
+﻿using Flames.Enum;
+using Flames.Gameplay;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -78,11 +79,10 @@ namespace Flames.View
 
         private void GameLoop(float deltaTimeMilliseconds)
         {
-            HIDHelper.Instance.PollInputs();
-            _physicsHelper.UpdatePosition(deltaTimeMilliseconds);
+            Direction movementDirection = HIDHelper.Instance.PollInputs();
+            _physicsHelper.UpdatePosition(movementDirection, deltaTimeMilliseconds);
             _collisionHelper.DetectCollision();
             _viewSpaceHelper.UpdateScene();
-
         }
     }
 }

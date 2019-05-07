@@ -3,6 +3,7 @@ using Flames.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Composition;
@@ -52,6 +53,9 @@ namespace Flames.Model
             // was relative to the player.
         }
 
-
+        public void RenderPosition()
+        {
+            Visual.Offset += new Vector3(Velocity, Visual.Offset.Y, 0);
+        }
     }
 }

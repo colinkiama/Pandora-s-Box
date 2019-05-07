@@ -1,4 +1,5 @@
-﻿using Flames.Interfaces;
+﻿using Flames.Enum;
+using Flames.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,15 @@ namespace Flames.Model
         public float PlayerAcceleration { get; set; }
         public float Velocity { get; set; }
         public float MaxSpeed { get; set; }
+
+        public void Accelerate(float deltaTimeMilliseconds, Direction movementDirection = Direction.None)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RenderPosition()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

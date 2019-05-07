@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flames.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -78,9 +79,9 @@ namespace Flames.Gameplay
             }
         }
 
-        internal void PollInputs()
+        internal Direction PollInputs()
         {
-            throw new NotImplementedException();
+            return Direction.Right;
         }
     }
 }
