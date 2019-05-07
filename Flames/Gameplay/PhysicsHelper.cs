@@ -12,31 +12,12 @@ namespace Flames.Gameplay
     {
         internal List<IPhysicsObject> InGameObjects = new List<IPhysicsObject>();
         float timePassed = 0;
-        public void UpdatePosition(Direction movementDirection , float deltaTimeMilliseconds)
+        public void UpdatePosition(Direction movementDirection, float deltaTimeMilliseconds)
         {
-            
+
             for (int i = 0; i < InGameObjects.Count; i++)
             {
-                if (i == 0)
-                {
-                    switch (movementDirection)
-                    {
-                        case (Direction.Left | Direction.Right):
-                            InGameObjects[i].Accelerate(movementDirection);
-                            break;
-
-                        case Direction.None:
-                            InGameObjects[i].Decelerate();
-                            break;
-
-                    }
-                }
-                else
-                {
-                    InGameObjects[i].Accelerate();
-                }
-                
-                
+                InGameObjects[i].Accelerate(deltaTimeMilliseconds, movementDirection);
             }
         }
 

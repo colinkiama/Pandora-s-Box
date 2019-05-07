@@ -12,9 +12,7 @@ namespace Flames.Interfaces
     {
         SpriteVisual Visual { get; set; }
         float PlayerAcceleration { get; set; }
-        float Velocity { get; set; }
-        float MaxSpeed { get; set; }
 
-        void Accelerate(Direction movementDirection = Direction.None);
+        void Accelerate(float deltaTimeMilliseconds, Direction movementDirection = Direction.None);
     }
 }
