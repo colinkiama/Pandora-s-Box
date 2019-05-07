@@ -24,17 +24,26 @@ namespace Flames.View
     /// </summary>
     public sealed partial class MainGameView : Page
     {
+        const float milliSecondsInSeconds = 1000;
+        
+        // Environment.TickCount updates at approximately 16ms;
+        const float highResolutionTimerFrequency = 16.0f;
+
+        float _deltaTimeMilliseconds;
+        PhysicsHelper _physicsHelper = new PhysicsHelper();
+        CollisionHelper _collisionHelper = new CollisionHelper();
+        ViewSpaceHelper _viewSpaceHelper = new ViewSpaceHelper();
         public MainGameView()
         {
             this.InitializeComponent();
+            // Targeting 60FPS at first
+            _deltaTimeMilliseconds = milliSecondsInSeconds / 60.0f;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             StartGame();
-            HIDHelper.Instance.ButtonPressedDown += Instance_ButtonPressedDown;
-            HIDHelper.Instance.ButtonReleased += Instance_ButtonReleased;
 
         }
 
@@ -56,7 +65,24 @@ namespace Flames.View
 
         private void StartGame()
         {
-            
+            int beginMilliseconds = Environment.TickCount;
+            while (true)
+            {
+                GameLoop(_deltaTimeMilliseconds);
+                int endMilliseconds = Environment.TickCount;
+                _deltaTimeMilliseconds = (float)(endMilliseconds - beginMilliseconds) /
+                    highResolutionTimerFrequency;
+                beginMilliseconds = endMilliseconds;
+            }
+        }
+
+        private void GameLoop(float deltaTimeMilliseconds)
+        {
+            HIDHelper.Instance.PollInputs();
+            _physicsHelper.UpdatePosition(deltaTimeMilliseconds);
+            _collisionHelper.DetectCollision();
+            _viewSpaceHelper.UpdateScene();
+
         }
     }
 }

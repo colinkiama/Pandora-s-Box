@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.System;
 
 namespace Flames.Gameplay
 {
-    class CollisionHelper
+    internal static class InputBuffer
     {
-        internal void DetectCollision()
-        {
-            throw new NotImplementedException();
-        }
+        public static Queue<VirtualKey> buffer { get; set; }
     }
 }

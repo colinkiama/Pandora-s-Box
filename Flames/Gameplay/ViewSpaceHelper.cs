@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Flames.Gameplay
 {
-    class CollisionHelper
+    class ViewSpaceHelper
     {
-        internal void DetectCollision()
+        internal void UpdateScene()
         {
             throw new NotImplementedException();
         }

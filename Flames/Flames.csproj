@@ -98,9 +98,15 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Core\Concurrency.cs" />
+    <Compile Include="Enum\Direction.cs" />
     <Compile Include="Gameplay\CollisionHelper.cs" />
     <Compile Include="Gameplay\HIDHelper.cs" />
+    <Compile Include="Gameplay\InputBuffer.cs" />
     <Compile Include="Gameplay\PhysicsHelper.cs" />
+    <Compile Include="Gameplay\RenderHelper.cs" />
+    <Compile Include="Gameplay\ViewSpaceHelper.cs" />
+    <Compile Include="Interfaces\IPhysicsObject.cs" />
     <Compile Include="Model\Flame.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,9 +169,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

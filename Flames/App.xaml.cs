@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flames.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,7 @@ namespace Flames
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            Startup();
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -72,6 +74,11 @@ namespace Flames
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+        }
+
+        private void Startup()
+        {
+            Concurrency.NumberOfCores = Environment.ProcessorCount;
         }
 
         /// <summary>

@@ -15,9 +15,6 @@ namespace Flames.Gameplay
             new Lazy<HIDHelper>(() => new HIDHelper());
 
         public static HIDHelper Instance = lazy.Value;
-        public event KeyEventHandler ButtonPressedDown;
-        public event KeyEventHandler ButtonReleased;
-
 
         private readonly object myLock = new object();
         private List<Gamepad> myGamepads = new List<Gamepad>();
@@ -25,8 +22,6 @@ namespace Flames.Gameplay
 
         public HIDHelper()
         {
-            Window.Current.Content.KeyDown += Content_KeyDown;
-            Window.Current.Content.KeyUp += Content_KeyUp;
             Gamepad.GamepadAdded += Gamepad_GamepadAdded;
             Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
         }
@@ -62,38 +57,9 @@ namespace Flames.Gameplay
             }
         }
 
-        private void Content_KeyUp(object sender, KeyRoutedEventArgs e)
-        {
-            ButtonReleased?.Invoke(this, e);
-            switch (e.Key)
-            {
+        
 
-                case Windows.System.VirtualKey.Left:
-                    break;
-                case Windows.System.VirtualKey.Up:
-                    break;
-                case Windows.System.VirtualKey.Right:
-                    break;
-                case Windows.System.VirtualKey.Down:
-                    break;
-                case Windows.System.VirtualKey.GamepadDPadLeft:
-                    break;
-                case Windows.System.VirtualKey.GamepadDPadRight:
-                    break;
-                case Windows.System.VirtualKey.GamepadLeftThumbstickRight:
-                    break;
-                case Windows.System.VirtualKey.GamepadLeftThumbstickLeft:
-                    break;
-
-
-            }
-        }
-
-        private void Content_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            ButtonPressedDown?.Invoke(this, e);
-        }
-
+        
         private void GetGamepads()
         {
             lock (myLock)
@@ -112,6 +78,9 @@ namespace Flames.Gameplay
             }
         }
 
-
+        internal void PollInputs()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

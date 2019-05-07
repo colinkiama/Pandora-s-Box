@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Flames.Enum;
+using Windows.UI.Composition;
+
+namespace Flames.Interfaces
+{
+    public interface IPhysicsObject
+    {
+        SpriteVisual Visual { get; set; }
+        float PlayerAcceleration { get; set; }
+        float Velocity { get; set; }
+        float MaxSpeed { get; set; }
+
+        void Accelerate(Direction movementDirection = Direction.None);
+    }
+}
